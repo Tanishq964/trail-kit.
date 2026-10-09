@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trail Kit — open-source AI that gets you outside</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f6f4ec;--fg:#1d2a1f;--mut:#5a6a5c;--card:#fff;--line:#dcd8c6;--acc:#2f7d3a;--acc2:#e8f2e3;--warn:#a65a00}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a14;--fg:#e6efe3;--mut:#9db09f;--card:#1a251c;--line:#2c3b2e;--acc:#6cc27a;--acc2:#1f3324;--warn:#e0a050}}
+:root[data-theme="dark"]{--bg:#121a14;--fg:#e6efe3;--mut:#9db09f;--card:#1a251c;--line:#2c3b2e;--acc:#6cc27a;--acc2:#1f3324;--warn:#e0a050}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+.w{max-width:880px;margin:0 auto;padding:0 20px}
+header{padding:64px 0 40px}
+.tag{display:inline-block;background:var(--acc2);color:var(--acc);padding:4px 12px;border-radius:99px;font-size:13px;font-weight:600}
+h1{font-size:clamp(2.2rem,6vw,3.6rem);line-height:1.1;margin:16px 0}
+h2{font-size:1.6rem;margin:0 0 12px}
+p{margin:0 0 12px}.mut{color:var(--mut)}
+section{padding:32px 0;border-top:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.card h3{margin:0 0 6px;font-size:1.05rem}
+.btn{display:inline-block;background:var(--acc);color:#fff;padding:10px 18px;border-radius:10px;text-decoration:none;font-weight:600;margin:6px 8px 0 0}
+.btn.o{background:none;color:var(--acc);border:1.5px solid var(--acc)}
+label{display:block;font-size:14px;font-weight:600;margin-bottom:4px}
+input{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg);width:100%}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:16px}
+.crop{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
+.crop:last-child{border:0}
+.now{color:var(--acc);font-weight:700}.soon{color:var(--warn)}.past{color:var(--mut)}
+code,pre{font-family:ui-monospace,Menlo,monospace;font-size:13px}
+pre{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;overflow-x:auto}
+footer{padding:32px 0 48px;color:var(--mut);font-size:14px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="w">
+<header>
+  <span class="tag">🌿 Open source · Offline-first · Hacktoberfest friendly</span>
+  <h1>Trail Kit: make the screen the shortest part of your day.</h1>
+  <p class="mut" style="font-size:1.15rem">Small open-weight models running on your own laptop or phone, so your bird ID, garden plan and fall-foliage run work with no signal and no account.</p>
+  <a class="btn" href="#try">Try the garden planner</a><a class="btn o" href="#contribute">Contribute</a>
+</header>
+
+<section>
+  <h2>Three tools, one local stack</h2>
+  <div class="grid">
+    <div class="card"><h3>🐦 Trail Birder</h3><p class="mut">Record a call on the trail; an on-device bird-sound model names the species. Works in airplane mode.</p></div>
+    <div class="card"><h3>🌱 Frost Gardener</h3><p class="mut">Tell it your local frost dates; it tells you what to plant this week. A local LLM explains the “why”.</p></div>
+    <div class="card"><h3>🍁 Foliage Run Club</h3><p class="mut">Builds group-run routes from open map data, ranked by tree cover and peak colour.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Why open matters here</h2>
+  <div class="grid">
+    <div class="card"><h3>No signal needed</h3><p class="mut">Trails have no bars. Open weights run where cloud APIs can't.</p></div>
+    <div class="card"><h3>Your data stays yours</h3><p class="mut">Your location and recordings never leave the device.</p></div>
+    <div class="card"><h3>Swap and fine-tune</h3><p class="mut">Tune a model on your region's birds or crops. Swap models without rewriting the app.</p></div>
+    <div class="card"><h3>Costs nothing to run</h3><p class="mut">No per-call fees, so a run club or school garden can use it freely.</p></div>
+  </div>
+</section>
+
+<section id="try">
+  <h2>Try it: what should I plant this week?</h2>
+  <p class="mut">A rule-based demo of the Frost Gardener (the local-LLM explanations live in the repo). Enter your frost dates:</p>
+  <div class="card">
+    <div class="row">
+      <div><label for="sp">Last spring frost</label><input type="date" id="sp"></div>
+      <div><label for="fa">First fall frost</label><input type="date" id="fa"></div>
+    </div>
+    <div id="out"></div>
+  </div>
+</section>
+
+<section>
+  <h2>Run it locally</h2>
+<pre>git clone https://github.com/YOUR-USERNAME/trail-kit
+cd trail-kit
+ollama pull llama3.2        # any open-weight model works
+python -m trailkit serve    # runs fully offline</pre>
+  <p class="mut">Stack: Ollama / llama.cpp for inference, an open bird-sound classifier, OpenStreetMap data, SQLite. Replace <code>YOUR-USERNAME</code> with your GitHub handle.</p>
+</section>
+
+<section id="contribute">
+  <h2>Contribute this Hacktoberfest</h2>
+  <p>Good first issues, all small and well scoped:</p>
+  <div class="card">
+    <div class="crop"><span>Add frost-date presets for your region</span><span class="mut">data</span></div>
+    <div class="crop"><span>Add crops to the planner table</span><span class="mut">data</span></div>
+    <div class="crop"><span>Translate the UI into your language</span><span class="mut">i18n</span></div>
+    <div class="crop"><span>Benchmark a new open model for bird calls</span><span class="mut">ml</span></div>
+  </div>
+  <a class="btn" href="https://hacktoberfest.com">About Hacktoberfest</a>
+</section>
+<footer>MIT licensed. Built for the DEV “Touch Grass” challenge. Go outside.</footer>
+</div>
+
+<script>
+const spring=[["Peas",-6,-2],["Spinach",-6,0],["Lettuce",-4,2],["Carrots",-3,2],["Tomato transplants",1,4],["Beans",1,6],["Squash",2,6]];
+const fall=[["Kale",-10,-4],["Fall spinach",-8,-2],["Radishes",-6,-2],["Garlic",0,4]];
+const y=new Date().getFullYear(),pad=n=>String(n).padStart(2,"0");
+document.getElementById("sp").value=y+"-04-15";
+document.getElementById("fa").value=y+"-10-25";
+function row(n,ref,a,b,today){
+  const DAY=864e5,s=ref.getTime()+a*7*DAY,e=ref.getTime()+b*7*DAY,t=today.getTime();
+  let cls,txt;
+  if(t>=s&&t<=e){cls="now";txt="Plant now"}
+  else if(t<s){const w=Math.ceil((s-t)/DAY/7);cls="soon";txt="In "+w+" week"+(w>1?"s":"")}
+  else{cls="past";txt="Window passed"}
+  return `<div class="crop"><span>${n}</span><span class="${cls}">${txt}</span></div>`;
+}
+function render(){
+  const sp=document.getElementById("sp").value,fa=document.getElementById("fa").value,t=new Date();
+  if(!sp||!fa){return}
+  const S=new Date(sp+"T00:00"),F=new Date(fa+"T00:00");
+  document.getElementById("out").innerHTML=
+   "<strong>Spring crops</strong>"+spring.map(c=>row(c[0],S,c[1],c[2],t)).join("")+
+   "<strong style='display:block;margin-top:12px'>Fall crops</strong>"+fall.map(c=>row(c[0],F,c[1],c[2],t)).join("");
+}
+document.getElementById("sp").oninput=render;document.getElementById("fa").oninput=render;render();
+</script>
+</body>
+</html>
